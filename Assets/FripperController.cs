@@ -25,30 +25,38 @@ public class FripperController : MonoBehaviour
         // Update is called once per frame
         void Update ()
         {
+                if(Input.touchCount == 0)
+                {
+                        Debug.Log("離れている");
+                        if(tag == "LeftFripperTag" || tag == "RightFripperTag")
+                        {
+                                SetAngle (this.defaultAngle);
+                        }
+                }
+                else if (Input.touchCount > 0)
+                {
+                        //このフレームでのタッチ情報を取得
+                        Touch[] myTouches = Input.touches;
 
-                //左矢印キーを押した時左フリッパーを動かす
-                if (Input.GetKeyDown(KeyCode.LeftArrow) && tag == "LeftFripperTag")
-                {
-                        SetAngle (this.flickAngle);
-                }
-                //右矢印キーを押した時右フリッパーを動かす
-                if (Input.GetKeyDown(KeyCode.RightArrow) && tag == "RightFripperTag")
-                {
-                        SetAngle (this.flickAngle);
-                }
-
-                //矢印キー離された時フリッパーを元に戻す
-                if (Input.GetKeyUp(KeyCode.LeftArrow) && tag == "LeftFripperTag")
-                {
-                        SetAngle (this.defaultAngle);
-                }
-                if (Input.GetKeyUp(KeyCode.RightArrow) && tag == "RightFripperTag")
-                {
-                        SetAngle (this.defaultAngle);
+                        //検出されている指の数だけ回して
+                        for (int i = 0; i < myTouches.Length; i++)
+                        {
+                                Debug.Log(myTouches[i].position.x);
+                                if((myTouches[i].position.x <= Screen.width / 2) && tag == "LeftFripperTag")
+                                {
+                                        Debug.Log("左");
+                                        SetAngle(this.flickAngle);
+                                }
+                                else if((myTouches[i].position.x >= Screen.width / 2) && tag == "RightFripperTag")
+                                {
+                                        Debug.Log("右");
+                                        SetAngle(this.flickAngle);
+                                }
+                        }
                 }
         }
 
-        //フリッパーの傾きを設定
+         //フリッパーの傾きを設定
         public void SetAngle (float angle)
         {
                 JointSpring jointSpr = this.myHingeJoint.spring;
